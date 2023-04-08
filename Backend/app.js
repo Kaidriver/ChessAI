@@ -26,16 +26,15 @@ function evaluation_fun(fen) {
 }
 
 function getValue(board, depth) {
-    let chess = new Chess(board)
-    if (chess.isCheckmate()) {
+    if (board.isCheckmate()) {
         if (board % 2 == 0) {
             return -100
         }
         
         return 100
     }
-    else if (depth == 4) {
-        return evaluation_fun(board)
+    else if (depth == 6) {
+        return evaluation_fun(board.fen())
     }
 
     if (depth % 2 == 0) {
@@ -48,19 +47,18 @@ function getValue(board, depth) {
 
 function getMin(board, depth) {
     let minVal = 1000
-    let chess = new Chess(board)
-    let possibleMoves = chess.moves()
+    let possibleMoves = board.moves()
 
     let minMove = null 
     for (let i = 0; i < possibleMoves.length; i++) {
-        chess.move(possibleMoves[i])
-        let val = getValue(chess.fen(), depth + 1)
+        board.move(possibleMoves[i])
+        let val = getValue(board, depth + 1)
         if (val < minVal) {
             minVal = val
             minMove = possibleMoves[i]
         }
 
-        chess.undo()
+        board.undo()
     }
 
     return [minVal, minMove]
@@ -68,19 +66,18 @@ function getMin(board, depth) {
 
 function getMax(board, depth) {
     let maxVal = -1000
-    let chess = new Chess(board)
-    let possibleMoves = chess.moves()
+    let possibleMoves = board.moves()
 
     let maxMove = null 
     for (let i = 0; i < possibleMoves.length; i++) {
-        chess.move(possibleMoves[i])
-        let val = getValue(chess.fen(), depth + 1)
+        board.move(possibleMoves[i])
+        let val = getValue(board, depth + 1)
         if (val > maxVal) {
             maxVal = val
             maxMove = possibleMoves[i]
         }
 
-        chess.undo()
+        board.undo()
     }
 
     return [maxVal, maxMove]
@@ -89,7 +86,7 @@ function getMax(board, depth) {
 const chess = new Chess()
 chess.move('e4')
  
-console.log(getMin(chess.fen(), 0)[1])
+console.log(getMin(chess, 0)[1])
 // const server = http.createServer((req, res) => {
 //   res.statusCode = 200;
 //   res.setHeader('Content-Type', 'text/plain');
