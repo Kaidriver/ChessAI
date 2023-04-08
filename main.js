@@ -9,6 +9,24 @@ let board =
   ["R", "N", "B", "Q", "K", "B", "N", "R"]
 ];
 
+// Function to change piece position
+var state = false;
+var currPiece;
+var curCell;
+function getCell(curr){
+  
+  //means that no piece is selected
+  if(!state){
+    state = true; // selects piece to be moved to
+    currPiece = curr.innerHTML;
+    currCell = curr;
+  }
+  else{
+
+  }
+
+}
+
 function insertImage() {
   document.querySelectorAll('.box').forEach(image => {
     if (image.innerText.length !== 0) {
