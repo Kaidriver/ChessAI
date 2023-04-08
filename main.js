@@ -58,26 +58,6 @@ function initBoard() {
                    "<td class='dark'>♛</td> <td class='light'>♚</td> <td class='dark'>♝</td>" +
                    "<td class='light'>♞</td> <td class='dark'>♜</td>"
         break;
-      } else if (i == 7) {
-        if (j == 0) {
-          display += "<th>" + i + "</th>";
-        } else {
-          if (j % 2 == 0) {
-            display += "<td class='light'>♟</td>";
-          } else {
-            display += "<td class='dark'>♟</td>";
-          }
-        }
-      } else if (i == 2) {
-        if (j == 0) {
-          display += "<th>" + i + "</th>";
-        } else {
-          if (j % 2 == 0) {
-            display += "<td class='dark'>♙</td>";
-          } else {
-            display += "<td class='light'>♙</td>";
-          }
-        }
       } else if (i == 1) {
         display += "<th>1</th> <td class='dark'>♖</td> <td class='light'>♘</td> <td class='dark'>♗</td>" +
                    "<td class='light'>♕</td> <td class='dark'>♔</td> <td class='light'>♗</td>" +
@@ -89,15 +69,15 @@ function initBoard() {
         } else {
           if (i % 2 == 0) {
             if (j % 2 == 0) {
-              display += "<td class='dark'></td>";
+              display += "<td class='dark'>" + (i == 2 ? "♙" : "") + "</td>";
             } else {
-              display += "<td class='light'></td>";
+              display += "<td class='light'>" + (i == 2 ? "♙" : "") + "</td>";
             }
           } else {
             if (j % 2 == 0) {
-              display += "<td class='light'></td>";
+              display += "<td class='light'>" + (i == 7 ? "♟" : "") + "</td>";
             } else {
-              display += "<td class='dark'></td>";
+              display += "<td class='dark'>" + (i == 7 ? "♟" : "") + "</td>";
             }
           }
         }
@@ -107,7 +87,6 @@ function initBoard() {
   }
   display += "</tbody> </table>";
   document.getElementById("board").innerHTML = display;
-  console.log(display);
 }
 
 // Initialize the game
