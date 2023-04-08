@@ -1,7 +1,22 @@
+// Function to change piece position
+var state = false;
+var currPiece;
+var curCell;
+function getCell(curr){
+  //means that no piece is selected
+  if (!state) {
+    state = true; // selects piece to be moved to
+    currPiece = curr.innerHTML;
+    currCell = curr;
+  } else{
+    curr.innerHTML = currPiece;
+    currCell.innerHTML = "";
+    state = false;
+  }
+}
 
-// Function to display and start the board
+// Function to display the board
 function initBoard() {
-  
   let display = "<table class='center chess-board'> <tbody>";
   for (let i = 9; i >= 1; i--) {
     display += "<tr class='row'>";
@@ -45,43 +60,21 @@ function initBoard() {
   document.getElementById("board").innerHTML = display;
 }
 
-//listens for clicks, if cell has a piece, call getCell to update position
-function playBoard(){
-  var cells = document.getElementsByTagName("td");
-  for(var i =0;i<cells.length;i++){
-    if(cells[i].innerHTML != ""){
-      cells[i].onclick=function(){
-        getCell(this);
-      }
-    }
-  }
-}
-// Function to change piece position
-function getCell(curr){
-  var state = false;
-  var currPiece;
-  var currCell;
-  //means that no piece is selected
-  if(!state){
-    state = true; // selects piece to be moved to
-    currPiece = curr.innerHTML;
-    currCell = curr;
-  }
-  else{
-    curr.innerHTML = currPiece;
-    currCell.innerHTML = "";
-    state = false;
-  }
+function playBoard() {
+
 }
 
+function validMove(chessboard) {
 
+}
 
+function gameOutcome(chessboard) {
 
+}
 
 // Initialize the game
 function initGame() {
   initBoard();
-  const board = new Chess();
 }
 
 initGame();
