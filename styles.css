@@ -17,3 +17,8 @@
 .chess-board .light { background: #eee; }
 
 .chess-board .dark { background: #aaa; }
+
+.center {
+    margin-left: auto;
+    margin-right: auto;
+}

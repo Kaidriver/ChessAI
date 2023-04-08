@@ -46,7 +46,7 @@ insertImage()
 
 // Function to display the board
 function initBoard() {
-  let display = "<table class='chess-board'> <tbody>";
+  let display = "<table class='center chess-board'> <tbody>";
   for (let i = 9; i >= 1; i--) {
     display += "<tr class='row'>";
     for (let j = 0; j <= 8; j++) {
@@ -109,6 +109,11 @@ function initBoard() {
   document.getElementById("board").innerHTML = display;
   console.log(display);
 }
+
+function playBoard(){
+  
+}
+
 
 // Initialize the game
 function initGame() {
