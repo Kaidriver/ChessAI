@@ -22,7 +22,9 @@ function getCell(curr){
     currCell = curr;
   }
   else{
-
+    curr.innerHTML = currPiece;
+    currCell.innerHTML = "";
+    state = false;
   }
 
 }
