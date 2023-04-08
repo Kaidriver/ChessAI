@@ -1,92 +1,244 @@
 import { Chess } from 'chess.js'
+import promptSync from 'prompt-sync';
 
+var counter = 0
+var transTable = new Map()
+
+var pawnWhite =
+    [
+        [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
+        [5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0],
+        [1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0],
+        [0.5,  0.5,  1.0,  2.5,  2.5,  1.0,  0.5,  0.5],
+        [0.0,  0.0,  0.0,  2.0,  2.0,  0.0,  0.0,  0.0],
+        [0.5, -0.5, -1.0,  0.0,  0.0, -1.0, -0.5,  0.5],
+        [0.5,  1.0, 1.0,  -2.0, -2.0,  1.0,  1.0,  0.5],
+        [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0]
+    ];
+var pawnBlack = pawnWhite.slice().reverse()
+var knightWhite = 
+    [
+        [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
+        [-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0],
+        [-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0],
+        [-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0],
+        [-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0],
+        [-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0],
+        [-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0],
+        [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0]
+    ];
+var knightBlack = knightWhite.slice().reverse()
+var bishopWhite = [
+    [ -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
+    [ -1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
+    [ -1.0,  0.0,  0.5,  1.0,  1.0,  0.5,  0.0, -1.0],
+    [ -1.0,  0.5,  0.5,  1.0,  1.0,  0.5,  0.5, -1.0],
+    [ -1.0,  0.0,  1.0,  1.0,  1.0,  1.0,  0.0, -1.0],
+    [ -1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0],
+    [ -1.0,  0.5,  0.0,  0.0,  0.0,  0.0,  0.5, -1.0],
+    [ -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0]
+];
+var bishopBlack = bishopWhite.slice().reverse()
+var rookWhite = [
+    [  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
+    [  0.5,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [ -0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [  0.0,   0.0, 0.0,  0.5,  0.5,  0.0,  0.0,  0.0]
+];
+var rookBlack = rookWhite.slice().reverse()
+var queenWhite = [
+    [ -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
+    [ -1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
+    [ -1.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
+    [ -0.5,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
+    [  0.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
+    [ -1.0,  0.5,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
+    [ -1.0,  0.0,  0.5,  0.0,  0.0,  0.0,  0.0, -1.0],
+    [ -2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0]
+];
+var queenBlack = queenWhite.slice().reverse()
+var kingWhite = [
+
+    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [ -3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [ -2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0],
+    [ -1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0],
+    [  2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  2.0,  2.0 ],
+    [  2.0,  3.0,  1.0,  0.0,  0.0,  1.0,  3.0,  2.0 ]
+];
+var kingBlack = kingWhite.slice().reverse()
 function evaluation_fun(fen) {
     let pieces = fen.split(" ")[0]
+    let rows = pieces.split("/")
     let piece_vals = {
-        "p": -1,
-        "n": -3,
-        "b": -3,
-        "q": -9,
-        "r": -5,
-        "P": 1,
-        "N": 3,
-        "B": 3,
-        "Q": 9,
-        "R": 5,
+        "p": -10,
+        "n": -32,
+        "b": -33,
+        "q": -90,
+        "r": -50,
+        "k": 0,
+        "P": 10,
+        "N": 32,
+        "B": 33,
+        "Q": 90,
+        "R": 50,
+        "K": 0
     }
 
+    let position_vals = {
+        "p": pawnBlack,
+        "n": knightBlack,
+        "b": bishopBlack,
+        "r": rookBlack,
+        "q": queenBlack,
+        "k": kingBlack,
+        "P": pawnWhite,
+        "N": knightWhite,
+        "B": bishopWhite,
+        "R": rookWhite,
+        "Q": queenWhite,
+        "K": kingWhite
+    }
+
+    let black = new Set(["p","n","b", "r", "q", "k"]);
     let val = 0
-    for (let i = 0; i < pieces.length; i++) {
-        if (pieces[i] in piece_vals) {
-            val += piece_vals[pieces[i]]
+    for (let row = 0; row < rows.length; row++) {
+        let row_string = rows[row]
+        let left_spaces = 0
+        for (let col = 0; col < row_string.length; col++) {
+            let piece = row_string[col]
+            if (piece in piece_vals) {
+                if (black.has(piece)) {
+                    val += piece_vals[piece] - position_vals[piece][row][left_spaces]
+                }
+                else {
+                    val += piece_vals[piece] + position_vals[piece][row][left_spaces]
+                }
+                
+                left_spaces++
+            }
+            else {
+                left_spaces += parseInt(piece)
+            }
         }
     }
 
     return val
 }
 
-function getValue(board, depth) {
+function getValue(board, depth, alpha, beta) {
+    counter++
     if (board.isCheckmate()) {
-        if (board % 2 == 0) {
-            return -100
+        // if white to move, and board is checkmate, black won
+        if (depth % 2 == 1) {
+            return -10000
         }
         
-        return 100
+        return 10000
     }
-    else if (depth == 6) {
+    else if (depth == 4) {
         return evaluation_fun(board.fen())
     }
 
+    if (transTable.has(board.fen())) {
+        return transTable.get(board.fen())
+    }
+
     if (depth % 2 == 0) {
-        return getMin(board, depth)[0]
+        return getMin(board, depth, alpha, beta)[0]
     }
     else {
-        return getMax(board, depth)[0]
+        return getMax(board, depth, alpha, beta)[0]
     }
 }
 
-function getMin(board, depth) {
-    let minVal = 1000
+function getMin(board, depth, alpha, beta) {
+    let minVal = 100000
     let possibleMoves = board.moves()
+    let moveVals = {}
+    for (let i = 0; i < possibleMoves.length; i++) {
+        board.move(possibleMoves[i])
+        moveVals[possibleMoves[i]] = evaluation_fun(board.fen())
+        board.undo()
+    }
 
     let minMove = null 
     for (let i = 0; i < possibleMoves.length; i++) {
         board.move(possibleMoves[i])
-        let val = getValue(board, depth + 1)
+        let val = getValue(board, depth + 1, alpha, beta)
+        if (val < alpha) {
+            board.undo()
+            return val
+        }
+
         if (val < minVal) {
             minVal = val
             minMove = possibleMoves[i]
         }
 
+        beta = Math.min(beta, minVal)
         board.undo()
     }
 
+    transTable.set(board.fen(), minVal)
     return [minVal, minMove]
 }
 
-function getMax(board, depth) {
-    let maxVal = -1000
+function getMax(board, depth, alpha, beta) {
+    let maxVal = -100000
     let possibleMoves = board.moves()
+    let moveVals = {}
+    for (let i = 0; i < possibleMoves.length; i++) {
+        board.move(possibleMoves[i])
+        moveVals[possibleMoves[i]] = evaluation_fun(board.fen())
+        board.undo()
+    }
 
+    possibleMoves.sort((a, b) => moveVals[b] - moveVals[a])
     let maxMove = null 
     for (let i = 0; i < possibleMoves.length; i++) {
         board.move(possibleMoves[i])
-        let val = getValue(board, depth + 1)
+        let val = getValue(board, depth + 1, alpha, beta)
+        if (val > beta) {
+            board.undo()
+            return val
+        }
+
         if (val > maxVal) {
             maxVal = val
             maxMove = possibleMoves[i]
         }
 
+        alpha = Math.max(alpha, maxVal)
         board.undo()
     }
 
+    transTable.set(board.fen(), maxVal)
     return [maxVal, maxMove]
 }
 
-const chess = new Chess()
-chess.move('e4')
+const chess = new Chess('r1bqkbnr/1ppp1pp1/p1n4p/4p3/2BPP3/5N2/PPP2PPP/RNBQK2R w KQkq - 0 1')
+const prompt = promptSync()
+
+
+chess.move({ from: 'e1', to: 'g1' })
+console.log(chess.ascii())
+// while (!chess.isCheckmate()) {
+//     let input = prompt("Move: ")
+//     chess.move(input)
+//     console.log(chess.ascii())
+//     let aiMove = getMin(chess, 0, -1000000, 1000000)
+//     chess.move(aiMove[1])
+//     console.log(chess.ascii())
+//     console.log(counter)
+// }
  
-console.log(getMin(chess, 0)[1])
 // const server = http.createServer((req, res) => {
 //   res.statusCode = 200;
 //   res.setHeader('Content-Type', 'text/plain');
