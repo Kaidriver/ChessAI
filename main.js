@@ -1,4 +1,5 @@
-let board = [  ["r", "n", "b", "q", "k", "b", "n", "r"],
+let board =
+[ ["r", "n", "b", "q", "k", "b", "n", "r"],
   ["p", "p", "p", "p", "p", "p", "p", "p"],
   [" ", " ", " ", " ", " ", " ", " ", " "],
   [" ", " ", " ", " ", " ", " ", " ", " "],
@@ -24,22 +25,47 @@ function insertImage() {
 insertImage()
 
 // Function to display the board
-function displayBoard() {
-  let display = "";
-  for (let i = 0; i < 8; i++) {
-    display += "<div class='row'>";
-    for (let j = 0; j < 8; j++) {
-      display += "<div class='square'>" + board[i][j] + "</div>";
+function displayInitBoard() {
+  let display = "<table class='chess-board'> <tbody>";
+  for (let i = 9; i >= 1; i--) {
+    display += "<tr class='row'>";
+    for (let j = 0; j <= 8; j++) {
+      if (i == 9) {
+        display += "<th></th> <th>a</th> <th>b</th> <th>c</th> <th>d</th> <th>e</th> <th>f</th> <th>g</th> <th>h</th>";
+        break;
+      } else {
+        if (j == 0) {
+          display += "<th>" + i + "</th>";
+        } else {
+          if (i % 2 == 0) {
+            if (j % 2 == 0) {
+              display += "<td class='dark'></td>";
+            } else {
+              display += "<td class='light'></td>";
+            }
+          } else {
+            if (j % 2 == 0) {
+              display += "<td class='light'></td>";
+            } else {
+              display += "<td class='dark'></td>";
+            }
+          }
+        }
+      }
     }
-    display += "</div>";
+    display += "</tr>";
   }
+  display += "</tbody> </table>";
   document.getElementById("board").innerHTML = display;
+  console.log(display);
 }
 
 // Initialize the game
 function initGame() {
-  displayBoard();
+  displayInitBoard();
 }
+
+initGame();
 
 
 /* // Function to move a piece
