@@ -1,8 +1,10 @@
 import { Chess } from 'chess.js'
 import promptSync from 'prompt-sync';
 import express from "express"
+import cors from "cors"
 
 var app = express();
+app.use(cors())
 app.listen(3000, () => {
  console.log("Server running on port 3000");
 });
