@@ -14,7 +14,7 @@ var state = false;
 var currPiece;
 var curCell;
 function getCell(curr){
-  
+
   //means that no piece is selected
   if(!state){
     state = true; // selects piece to be moved to
@@ -45,13 +45,43 @@ function insertImage() {
 insertImage()
 
 // Function to display the board
-function displayInitBoard() {
+function initBoard() {
   let display = "<table class='chess-board'> <tbody>";
   for (let i = 9; i >= 1; i--) {
     display += "<tr class='row'>";
     for (let j = 0; j <= 8; j++) {
       if (i == 9) {
         display += "<th></th> <th>a</th> <th>b</th> <th>c</th> <th>d</th> <th>e</th> <th>f</th> <th>g</th> <th>h</th>";
+        break;
+      } else if (i == 8) {
+        display += "<th>8</th> <td class='light'>♜</td> <td class='dark'>♞</td> <td class='light'>♝</td>" +
+                   "<td class='dark'>♛</td> <td class='light'>♚</td> <td class='dark'>♝</td>" +
+                   "<td class='light'>♞</td> <td class='dark'>♜</td>"
+        break;
+      } else if (i == 7) {
+        if (j == 0) {
+          display += "<th>" + i + "</th>";
+        } else {
+          if (j % 2 == 0) {
+            display += "<td class='light'>♟</td>";
+          } else {
+            display += "<td class='dark'>♟</td>";
+          }
+        }
+      } else if (i == 2) {
+        if (j == 0) {
+          display += "<th>" + i + "</th>";
+        } else {
+          if (j % 2 == 0) {
+            display += "<td class='dark'>♙</td>";
+          } else {
+            display += "<td class='light'>♙</td>";
+          }
+        }
+      } else if (i == 1) {
+        display += "<th>1</th> <td class='dark'>♖</td> <td class='light'>♘</td> <td class='dark'>♗</td>" +
+                   "<td class='light'>♕</td> <td class='dark'>♔</td> <td class='light'>♗</td>" +
+                   "<td class='dark'>♘</td> <td class='light'>♖</td>"
         break;
       } else {
         if (j == 0) {
@@ -82,7 +112,7 @@ function displayInitBoard() {
 
 // Initialize the game
 function initGame() {
-  displayInitBoard();
+  initBoard();
 }
 
 initGame();
