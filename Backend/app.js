@@ -1,5 +1,11 @@
 import { Chess } from 'chess.js'
 import promptSync from 'prompt-sync';
+import express from "express"
+
+var app = express();
+app.listen(3000, () => {
+ console.log("Server running on port 3000");
+});
 
 var counter = 0
 var transTable = new Map()
@@ -229,6 +235,11 @@ const prompt = promptSync()
 
 chess.move({ from: 'e1', to: 'g1' })
 console.log(chess.ascii())
+
+app.get("/get_board", (req, res, next) => {
+    console.log(req)
+    res.json(["Hello", "World"])
+})
 // while (!chess.isCheckmate()) {
 //     let input = prompt("Move: ")
 //     chess.move(input)
@@ -238,13 +249,3 @@ console.log(chess.ascii())
 //     console.log(chess.ascii())
 //     console.log(counter)
 // }
- 
-// const server = http.createServer((req, res) => {
-//   res.statusCode = 200;
-//   res.setHeader('Content-Type', 'text/plain');
-//   res.end('Hello World');
-// });
-
-// server.listen(port, hostname, () => {
-//   console.log(`Server running at http://${hostname}:${port}/`);
-// });
