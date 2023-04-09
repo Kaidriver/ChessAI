@@ -120,7 +120,7 @@ var coord = {
 };
 
 async function make_move(from, to, piece) {
-  let res = await axios.post("http://ec2-35-171-8-229.compute-1.amazonaws.com:3000/make_move", {
+  let res = await axios.post("https://api.cagnusmarlsenbot.tech/make_move", {
         from: from,
         to: to,
         piece: piece
@@ -129,7 +129,7 @@ async function make_move(from, to, piece) {
 }
 
 async function ai_move() {
-  let res = await axios.get("http://ec2-35-171-8-229.compute-1.amazonaws.com:3000/ai_move")
+  let res = await axios.get("https://api.cagnusmarlsenbot.tech/ai_move")
   return res.data
 }
 
