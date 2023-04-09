@@ -207,6 +207,7 @@ async function getCell(curr) {
       // }
       // currCell.innerHTML = "";
       FENtoBoard(res)
+      document.querySelector('.loading').style.display = "initial"
       ai_res = await ai_move();
 
       if (ai_res !== "draw" && ai_res !== "white wins" && ai_res !== "black wins") {
@@ -238,6 +239,8 @@ async function getCell(curr) {
           break;
       }
     }
+
+    document.querySelector('.loading').style.display = "none"
     state = false;
   }
 }

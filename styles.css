@@ -40,3 +40,27 @@ background: #aaa;
     margin-left: auto;
     margin-right: auto;
 }
+
+#board {
+  width: 100%;
+}
+
+.header {
+  text-align: center;
+}
+
+.cagnus {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cagnus img {
+  width: 10%;
+}
+
+.loading {
+  width: 3% !important;
+  height: 3%;
+  display: none;
+}
