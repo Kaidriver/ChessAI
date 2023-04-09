@@ -116,63 +116,8 @@ var coord = {
   "15": "e1",
   "16": "f1",
   "17": "g1",
-  "18": "h1",
-
-
+  "18": "h1"
 };
-
-// Function to display and start the board
-function initBoard() {
-  display = "<table class='center chess-board'> <tbody>";
-  for (let i = 9; i >= 1; i--) {
-    display += "<tr class='row'>";
-    if (i == 9) {
-      display += "<th></th> <th>a</th> <th>b</th> <th>c</th> <th>d</th> <th>e</th> <th>f</th> <th>g</th> <th>h</th>";
-    } else if (i == 8) {
-      display += "<th>8</th> <td class='light' id='a8'>♜</td> <td class='dark' id='b8'>♞</td>" +
-                 "<td class='light' id='c8'>♝</td> <td class='dark' id='d8'>♛</td>" +
-                 "<td class='light' id='e8'>♚</td> <td class='dark' id='f8'>♝</td>" +
-                 "<td class='light' id='g8'>♞</td> <td class='dark' id='h8'>♜</td>"
-    } else if (i == 1) {
-      display += "<th>1</th> <td class='dark' id='a1'>♖</td> <td class='light' id='b1'>♘</td>" +
-                 "<td class='dark' id='c1'>♗</td> <td class='light' id='d1'>♕</td>" +
-                 "<td class='dark' id='e1'>♔</td> <td class='light' id='f1'>♗</td>" +
-                 "<td class='dark' id='g1'>♘</td> <td class='light' id='h1'>♖</td>"
-    } else {
-      for (let j = 0; j <= 8; j++) {
-        if (j == 0) {
-          display += "<th>" + i + "</th>";
-        } else {
-          let id = coord[i.toString() + j.toString()];
-          if (i % 2 == 0) {
-            if (j % 2 == 0) {
-              display += "<td class='dark' id=" + id + ">" + (i == 2 ? "♙" : "") + "</td>";
-            } else {
-              display += "<td class='light' id=" + id + ">" + (i == 2 ? "♙" : "") + "</td>";
-            }
-          } else {
-            if (j % 2 == 0) {
-              display += "<td class='light' id=" + id + ">" + (i == 7 ? "♟" : "") + "</td>";
-            } else {
-              display += "<td class='dark' id=" + id + ">" + (i == 7 ? "♟" : "") + "</td>";
-            }
-          }
-        }
-      }
-    }
-    display += "</tr>";
-  }
-  display += "</tbody> </table>";
-  document.getElementById("board").innerHTML = display;
-}
-
-async function get_move(from, to) {
-  let res = await axios.post("http://localhost:3000/get_board", {
-        from: from,
-        to: to
-      })
-  return res.data
-}
 
 // Listens for clicks, if cell has a piece, call getCell to update position
 function playBoard() {
@@ -185,7 +130,6 @@ function playBoard() {
   }
 }
 
-// FEN, error, white_win, black_win, draw
 // Function to change piece position
 async function getCell(curr) {
   if (!state) {
@@ -197,11 +141,11 @@ async function getCell(curr) {
     }
   } else {
     res = await get_move(currCell.id, curr.id)
-    if (res !== "error" && res !== "draw" && res !== "white win" && res !== "black win") {
+    if (res !== "error" && res !== "draw" && res !== "white wins" && res !== "black wins") {
       curr.innerHTML = currPiece;
       currCell.innerHTML = "";
+      FENtoBoard(res);
     }
-    FENtoBoard(res);
     state = false;
     console.log("hi")
   }
@@ -212,7 +156,6 @@ function FENtoBoard(fen) {
                             '([pnbrqkPNBRQK12345678]+)\/?([pnbrqkPNBRQK12345678]+)\/?([pnbrqkPNBRQK12345678]+)\/?',
                             '([pnbrqkPNBRQK12345678]+)\/?([pnbrqkPNBRQK12345678]+)'].join(''));
   let matchGroups = regex.exec(fen)
-  // console.log(matchGroups);
 
   display = "<table class='center chess-board'> <tbody>";
 
@@ -276,7 +219,71 @@ function FENtoBoard(fen) {
   playBoard()
 }
 
-function getFEN() {
+// Initialize the game
+function initGame() {
+  FENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+}
+
+initGame();
+
+// FENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+// FENtoBoard("r1b1k1nr/p2p1pNp/n2B4/1p1NP2P/6P1/3P1Q2/P1P1K3/q5b1");
+// FENtoBoard("8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8 b - - 99 50");
+
+// Function to display and start the board
+/* function initBoard() {
+  display = "<table class='center chess-board'> <tbody>";
+  for (let i = 9; i >= 1; i--) {
+    display += "<tr class='row'>";
+    if (i == 9) {
+      display += "<th></th> <th>a</th> <th>b</th> <th>c</th> <th>d</th> <th>e</th> <th>f</th> <th>g</th> <th>h</th>";
+    } else if (i == 8) {
+      display += "<th>8</th> <td class='light' id='a8'>♜</td> <td class='dark' id='b8'>♞</td>" +
+                 "<td class='light' id='c8'>♝</td> <td class='dark' id='d8'>♛</td>" +
+                 "<td class='light' id='e8'>♚</td> <td class='dark' id='f8'>♝</td>" +
+                 "<td class='light' id='g8'>♞</td> <td class='dark' id='h8'>♜</td>"
+    } else if (i == 1) {
+      display += "<th>1</th> <td class='dark' id='a1'>♖</td> <td class='light' id='b1'>♘</td>" +
+                 "<td class='dark' id='c1'>♗</td> <td class='light' id='d1'>♕</td>" +
+                 "<td class='dark' id='e1'>♔</td> <td class='light' id='f1'>♗</td>" +
+                 "<td class='dark' id='g1'>♘</td> <td class='light' id='h1'>♖</td>"
+    } else {
+      for (let j = 0; j <= 8; j++) {
+        if (j == 0) {
+          display += "<th>" + i + "</th>";
+        } else {
+          let id = coord[i.toString() + j.toString()];
+          if (i % 2 == 0) {
+            if (j % 2 == 0) {
+              display += "<td class='dark' id=" + id + ">" + (i == 2 ? "♙" : "") + "</td>";
+            } else {
+              display += "<td class='light' id=" + id + ">" + (i == 2 ? "♙" : "") + "</td>";
+            }
+          } else {
+            if (j % 2 == 0) {
+              display += "<td class='light' id=" + id + ">" + (i == 7 ? "♟" : "") + "</td>";
+            } else {
+              display += "<td class='dark' id=" + id + ">" + (i == 7 ? "♟" : "") + "</td>";
+            }
+          }
+        }
+      }
+    }
+    display += "</tr>";
+  }
+  display += "</tbody> </table>";
+  document.getElementById("board").innerHTML = display;
+}
+
+async function get_move(from, to) {
+  let res = await axios.post("http://localhost:3000/get_board", {
+        from: from,
+        to: to
+      })
+  return res.data
+} */
+
+/* function getFEN() {
   let cells = document.getElementsByTagName("td");
   let board= [
   ["", "", "", "", "", "", "", ""],
@@ -299,7 +306,6 @@ function getFEN() {
     board[x][y] = cells[i].innerHTML;
     y++;
   }
-  // console.log(board);
 
   let FEN = "";
   for (let i = 0; i < board.length; i++) {
@@ -320,19 +326,4 @@ function getFEN() {
     }
     FEN += "/";
   }
-
-  FEN += " w";
-  // console.log(FEN);
-}
-
-// Initialize the game
-function initGame() {
-  initBoard();
-  playBoard();
-}
-
-initGame();
-
-// FENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-// FENtoBoard("r1b1k1nr/p2p1pNp/n2B4/1p1NP2P/6P1/3P1Q2/P1P1K3/q5b1");
-// FENtoBoard("8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8 b - - 99 50");
+} */
