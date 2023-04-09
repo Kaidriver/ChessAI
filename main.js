@@ -43,6 +43,82 @@ var letter_to_piece = {
   "Q": "♕",
   "K": "♔"
 };
+var coord = {
+  "81": "a8",
+  "82": "b8",
+  "83": "c8",
+  "84": "d8",
+  "85": "e8",
+  "86": "f8",
+  "87": "g8",
+  "88": "h8",
+
+
+  "71": "a7",
+  "72": "b7",
+  "73": "c7",
+  "74": "d7",
+  "75": "e7",
+  "76": "f7",
+  "77": "g7",
+  "78": "h7",
+
+  "61": "a6",
+  "62": "b6",
+  "63": "c6",
+  "64": "d6",
+  "65": "e6",
+  "66": "f6",
+  "67": "g6",
+  "68": "h6",
+
+  "51": "a5",
+  "52": "b5",
+  "53": "c5",
+  "54": "d5",
+  "55": "e5",
+  "56": "f5",
+  "57": "g5",
+  "58": "h5",
+
+  "41": "a4",
+  "42": "b4",
+  "43": "c4",
+  "44": "d4",
+  "45": "e4",
+  "46": "f4",
+  "47": "g4",
+  "48": "h4",
+
+  "31": "a3",
+  "32": "b3",
+  "33": "c3",
+  "34": "d3",
+  "35": "e3",
+  "36": "f3",
+  "37": "g3",
+  "38": "h3",
+
+  "21": "a2",
+  "22": "b2",
+  "23": "c2",
+  "24": "d2",
+  "25": "e2",
+  "26": "f2",
+  "27": "g2",
+  "28": "h2",
+
+  "11": "a1",
+  "12": "b1",
+  "13": "c1",
+  "14": "d1",
+  "15": "e1",
+  "16": "f1",
+  "17": "g1",
+  "18": "h1",
+
+
+};
 
 // Function to display and start the board
 function initBoard() {
@@ -52,29 +128,32 @@ function initBoard() {
     if (i == 9) {
       display += "<th></th> <th>a</th> <th>b</th> <th>c</th> <th>d</th> <th>e</th> <th>f</th> <th>g</th> <th>h</th>";
     } else if (i == 8) {
-      display += "<th>8</th> <td class='light'>♜</td> <td class='dark'>♞</td> <td class='light'>♝</td>" +
-                 "<td class='dark'>♛</td> <td class='light'>♚</td> <td class='dark'>♝</td>" +
-                 "<td class='light'>♞</td> <td class='dark'>♜</td>"
+      display += "<th>8</th> <td class='light' id='a8'>♜</td> <td class='dark' id='b8'>♞</td>" +
+                 "<td class='light' id='c8'>♝</td> <td class='dark' id='d8'>♛</td>" +
+                 "<td class='light' id='e8'>♚</td> <td class='dark' id='f8'>♝</td>" +
+                 "<td class='light' id='g8'>♞</td> <td class='dark' id='h8'>♜</td>"
     } else if (i == 1) {
-      display += "<th>1</th> <td class='dark'>♖</td> <td class='light'>♘</td> <td class='dark'>♗</td>" +
-                 "<td class='light'>♕</td> <td class='dark'>♔</td> <td class='light'>♗</td>" +
-                 "<td class='dark'>♘</td> <td class='light'>♖</td>"
+      display += "<th>1</th> <td class='dark' id='a1'>♖</td> <td class='light' id='b1'>♘</td>" +
+                 "<td class='dark' id='c1'>♗</td> <td class='light' id='d1'>♕</td>" +
+                 "<td class='dark' id='e1'>♔</td> <td class='light' id='f1'>♗</td>" +
+                 "<td class='dark' id='g1'>♘</td> <td class='light' id='h1'>♖</td>"
     } else {
       for (let j = 0; j <= 8; j++) {
         if (j == 0) {
           display += "<th>" + i + "</th>";
         } else {
+          let id = coord[i.toString() + j.toString()];
           if (i % 2 == 0) {
             if (j % 2 == 0) {
-              display += "<td class='dark'>" + (i == 2 ? "♙" : "") + "</td>";
+              display += "<td class='dark' id=" + id + ">" + (i == 2 ? "♙" : "") + "</td>";
             } else {
-              display += "<td class='light'>" + (i == 2 ? "♙" : "") + "</td>";
+              display += "<td class='light' id=" + id + ">" + (i == 2 ? "♙" : "") + "</td>";
             }
           } else {
             if (j % 2 == 0) {
-              display += "<td class='light'>" + (i == 7 ? "♟" : "") + "</td>";
+              display += "<td class='light' id=" + id + ">" + (i == 7 ? "♟" : "") + "</td>";
             } else {
-              display += "<td class='dark'>" + (i == 7 ? "♟" : "") + "</td>";
+              display += "<td class='dark' id=" + id + ">" + (i == 7 ? "♟" : "") + "</td>";
             }
           }
         }
@@ -91,9 +170,8 @@ async function get_move(from, to) {
         from: from,
         to: to
       })
-  return res
+  return res.data
 }
-
 
 // Listens for clicks, if cell has a piece, call getCell to update position
 function playBoard() {
@@ -105,6 +183,7 @@ function playBoard() {
   }
 }
 
+// FEN, error, white_win, black_win, draw
 // Function to change piece position
 async function getCell(curr) {
   if (!state) {
@@ -115,6 +194,7 @@ async function getCell(curr) {
       currCell = curr;
     }
   } else {
+    let res = await get_move(currCell.id, curr.id)
     if (curr != currCell && piece_color[curr.innerHTML] !== "white") {
       curr.innerHTML = currPiece;
       currCell.innerHTML = "";
@@ -122,9 +202,6 @@ async function getCell(curr) {
     getFEN();
     state = false;
   }
-
-  let res = await get_move("e2", "e4")
-  console.log(res)
 }
 
 function FENtoBoard(fen) {
@@ -132,7 +209,7 @@ function FENtoBoard(fen) {
                             '([pnbrqkPNBRQK12345678]+)\/?([pnbrqkPNBRQK12345678]+)\/?([pnbrqkPNBRQK12345678]+)\/?',
                             '([pnbrqkPNBRQK12345678]+)\/?([pnbrqkPNBRQK12345678]+)'].join(''));
   let matchGroups = regex.exec(fen)
-  console.log(matchGroups);
+  // console.log(matchGroups);
 
   display = "<table class='center chess-board'> <tbody>";
 
@@ -152,35 +229,37 @@ function FENtoBoard(fen) {
       for (let j = 0; j < chars.length; j++) {
         if (!isNaN(parseInt(chars[j]))) {
           for (let k = 0; k < parseInt(chars[j]); k++) {
+            let id = coord[(row + 1).toString() + counter.toString()];
             if (i % 2 == 0) {
               if (counter % 2 == 0) {
-                display += "<td class='light'></td>";
+                display += "<td class='light' id=" + id + "></td>";
               } else {
-                display += "<td class='dark'></td>";
+                display += "<td class='dark' id=" + id + "></td>";
               }
               counter++;
             } else {
               if (counter % 2 == 0) {
-                display += "<td class='dark'></td>";
+                display += "<td class='dark' id=" + id + "></td>";
               } else {
-                display += "<td class='light'></td>";
+                display += "<td class='light' id=" + id + "></td>";
               }
               counter++;
             }
           }
         } else {
+          let id = coord[(row + 1).toString() + counter.toString()];
           if (i % 2 == 0) {
             if (counter % 2 == 0) {
-              display += "<td class='light'>" + letter_to_piece[chars[j]] + "</td>";
+              display += "<td class='light' id=" + id + ">" + letter_to_piece[chars[j]] + "</td>";
             } else {
-              display += "<td class='dark'>" + letter_to_piece[chars[j]] + "</td>";
+              display += "<td class='dark' id=" + id + ">" + letter_to_piece[chars[j]] + "</td>";
             }
             counter++;
           } else {
             if (counter % 2 == 0) {
-              display += "<td class='dark'>" + letter_to_piece[chars[j]] + "</td>";
+              display += "<td class='dark' id=" + id + ">" + letter_to_piece[chars[j]] + "</td>";
             } else {
-              display += "<td class='light'>" + letter_to_piece[chars[j]] + "</td>";
+              display += "<td class='light' id=" + id + ">" + letter_to_piece[chars[j]] + "</td>";
             }
             counter++;
           }
@@ -239,7 +318,7 @@ function getFEN() {
   }
 
   FEN += " w";
-  console.log(FEN);
+  // console.log(FEN);
 }
 
 // Initialize the game
@@ -251,6 +330,6 @@ function initGame() {
 initGame();
 
 // FENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
- //FENtoBoard("r1b1k1nr/p2p1pNp/n2B4/1p1NP2P/6P1/3P1Q2/P1P1K3/q5b1");
+ FENtoBoard("r1b1k1nr/p2p1pNp/n2B4/1p1NP2P/6P1/3P1Q2/P1P1K3/q5b1");
  playBoard();
 // FENtoBoard("8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8 b - - 99 50");
