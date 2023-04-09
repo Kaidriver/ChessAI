@@ -119,6 +119,14 @@ var coord = {
   "18": "h1"
 };
 
+async function get_move(from, to) {
+  let res = await axios.post("http://localhost:3000/get_board", {
+        from: from,
+        to: to
+      })
+  return res.data
+}
+
 // Listens for clicks, if cell has a piece, call getCell to update position
 function playBoard() {
   let cells = document.getElementsByTagName("td");
@@ -133,7 +141,6 @@ function playBoard() {
 // Function to change piece position
 async function getCell(curr) {
   if (!state) {
-    getFEN();
     if (curr.innerHTML && piece_color[curr.innerHTML] === "white") {
       state = true;
       currPiece = curr.innerHTML;
@@ -273,14 +280,6 @@ initGame();
   }
   display += "</tbody> </table>";
   document.getElementById("board").innerHTML = display;
-}
-
-async function get_move(from, to) {
-  let res = await axios.post("http://localhost:3000/get_board", {
-        from: from,
-        to: to
-      })
-  return res.data
 } */
 
 /* function getFEN() {
