@@ -122,7 +122,8 @@ var coord = {
 async function make_move(from, to) {
   let res = await axios.post("http://localhost:3000/make_move", {
         from: from,
-        to: to
+        to: to,
+        piece: piece
       })
   return res.data
 }
@@ -138,7 +139,6 @@ function playBoard() {
   for (let i = 0; i < cells.length; i++){
     cells[i].addEventListener('click', function() {
       getCell(this);
-      console.log("HIII")
     })
   }
 }
@@ -152,18 +152,65 @@ async function getCell(curr) {
       currCell = curr;
     }
   } else {
-    res = await make_move(currCell.id, curr.id)
+    let promotion = "";
+    if ((piece_to_letter[currPiece] === "p" || piece_to_letter[currPiece] === "P") && (curr.id).includes("8")) {
+      let pass = true;
+      while(pass) {
+        promotion = prompt("Enter q for Queen, r for Rook, b for Bishop, or n for Knight");
+        switch (promotion) {
+          case "q":
+          case "Q":
+            promotion = "q";
+            pass = false;
+            break;
+          case "r":
+          case "R":
+            promotion = "r";
+            pass = false;
+            break;
+          case "b":
+          case "B":
+            promotion = "r";
+            pass = false;
+            break;
+          case "n":
+          case "N":
+            promotion = "n";
+            pass = false;
+            break;
+        }
+      }
+    }
+    res = await make_move(currCell.id, curr.id, promotion);
     if (res !== "error" && res !== "draw" && res !== "white wins" && res !== "black wins") {
-      curr.innerHTML = currPiece;
+      if (promotion) {
+        switch (promotion) {
+          case "q":
+          case "Q":
+            curr.innerHTML = letter_to_piece["Q"]
+            break;
+          case "r":
+          case "R":
+            curr.innerHTML = letter_to_piece["R"]
+            break;
+          case "b":
+          case "B":
+            curr.innerHTML = letter_to_piece["B"]
+            break;
+          case "n":
+          case "N":
+            curr.innerHTML = letter_to_piece["N"]
+            break;
+        }
+      } else {
+        curr.innerHTML = currPiece;
+      }
       currCell.innerHTML = "";
-      FENtoBoard(res);
 
-      ai_res = await ai_move()
+      ai_res = await ai_move();
       FENtoBoard(ai_res);
     }
-
     state = false;
-    console.log("hi")
   }
 }
 
