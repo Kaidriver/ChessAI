@@ -253,7 +253,9 @@ app.post("/make_move", (req, res) => {
     }
       
 })
-
+app.get("/test", (req, res) => {
+    res.send("test!")
+})
 app.get("/ai_move", (req, res) => {
     let aiMove = getMin(chess, 0, -1000000, 1000000)
     chess.move(aiMove[1])
