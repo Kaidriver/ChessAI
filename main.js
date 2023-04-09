@@ -178,9 +178,10 @@ async function get_move(from, to) {
 function playBoard() {
   let cells = document.getElementsByTagName("td");
   for (let i = 0; i < cells.length; i++){
-    cells[i].onclick = function() {
+    cells[i].addEventListener('click', function() {
       getCell(this);
-    }
+      console.log("HIII")
+    })
   }
 }
 
@@ -195,7 +196,6 @@ async function getCell(curr) {
       currCell = curr;
     }
   } else {
-    console.log("hi")
     res = await get_move(currCell.id, curr.id)
     if (res !== "error" && res !== "draw" && res !== "white win" && res !== "black win") {
       curr.innerHTML = currPiece;
@@ -203,6 +203,7 @@ async function getCell(curr) {
     }
     FENtoBoard(res);
     state = false;
+    console.log("hi")
   }
 }
 
@@ -272,6 +273,7 @@ function FENtoBoard(fen) {
   }
   display += "</tbody> </table>";
   document.getElementById("board").innerHTML = display;
+  playBoard()
 }
 
 function getFEN() {
