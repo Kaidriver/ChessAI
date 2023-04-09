@@ -2,6 +2,7 @@ var state = false;
 var currPiece;
 var currCell;
 var res;
+var current_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 var piece_color = {
   "♟": "black",
   "♜": "black",
@@ -120,16 +121,19 @@ var coord = {
 };
 
 async function make_move(from, to, piece) {
-  let res = await axios.post("https://api.cagnusmarlsenbot.tech/make_move", {
+  let res = await axios.post("http://localhost:3000/make_move", {
         from: from,
         to: to,
-        piece: piece
+        piece: piece,
+        fen: current_fen
       })
   return res.data
 }
 
 async function ai_move() {
-  let res = await axios.get("https://api.cagnusmarlsenbot.tech/ai_move")
+  let res = await axios.post("http://localhost:3000/ai_move", {
+        fen: current_fen
+      })
   return res.data
 }
 
@@ -153,9 +157,7 @@ async function getCell(curr) {
       curr.style.background = "#6a6b6e";
     }
   } else {
-    console.log(currCell.classList[0] == "light")
     currCell.style.background = (currCell.classList[0] == "light") ? "#eee" : "#aaa"
-    console.log(currCell.style.background)
     let promotion = "";
     if ((piece_to_letter[currPiece] === "p" || piece_to_letter[currPiece] === "P") && (curr.id).includes("8")) {
       let pass = true;
@@ -210,11 +212,14 @@ async function getCell(curr) {
       //   curr.innerHTML = currPiece;
       // }
       // currCell.innerHTML = "";
+      current_fen = res
       FENtoBoard(res)
       document.querySelector('.loading').style.visibility = "initial"
       ai_res = await ai_move();
 
       if (ai_res !== "draw" && ai_res !== "white wins" && ai_res !== "black wins") {
+        current_fen = ai_res
+        console.log(current_fen)
         FENtoBoard(ai_res);
       }
       else {
@@ -268,7 +273,6 @@ function FENtoBoard(fen) {
       row--;
 
       let chars = matchGroups[i].split('');
-      console.log(chars);
 
       for (let j = 0; j < chars.length; j++) {
         if (!isNaN(parseInt(chars[j]))) {

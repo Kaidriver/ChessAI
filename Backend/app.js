@@ -10,8 +10,8 @@ app.listen(3000, () => {
  console.log("Server running on port 3000");
 });
 
-var counter = 0
-var transTable = new Map()
+//var counter = 0
+
 
 var pawnWhite =
     [
@@ -141,8 +141,8 @@ function evaluation_fun(fen) {
     return val
 }
 
-function getValue(board, depth, alpha, beta) {
-    counter++
+function getValue(board, depth, alpha, beta, transTable) {
+    //counter++
     if (board.isCheckmate()) {
         // if white to move, and board is checkmate, black won
         if (depth % 2 == 1) {
@@ -160,14 +160,14 @@ function getValue(board, depth, alpha, beta) {
     }
 
     if (depth % 2 == 0) {
-        return getMin(board, depth, alpha, beta)[0]
+        return getMin(board, depth, alpha, beta, transTable)[0]
     }
     else {
-        return getMax(board, depth, alpha, beta)[0]
+        return getMax(board, depth, alpha, beta, transTable)[0]
     }
 }
 
-function getMin(board, depth, alpha, beta) {
+function getMin(board, depth, alpha, beta, transTable) {
     let minVal = 100000
     let possibleMoves = board.moves()
     let moveVals = {}
@@ -180,7 +180,7 @@ function getMin(board, depth, alpha, beta) {
     let minMove = null 
     for (let i = 0; i < possibleMoves.length; i++) {
         board.move(possibleMoves[i])
-        let val = getValue(board, depth + 1, alpha, beta)
+        let val = getValue(board, depth + 1, alpha, beta, transTable)
         if (val < alpha) {
             board.undo()
             return val
@@ -199,7 +199,7 @@ function getMin(board, depth, alpha, beta) {
     return [minVal, minMove]
 }
 
-function getMax(board, depth, alpha, beta) {
+function getMax(board, depth, alpha, beta, transTable) {
     let maxVal = -100000
     let possibleMoves = board.moves()
     let moveVals = {}
@@ -213,7 +213,7 @@ function getMax(board, depth, alpha, beta) {
     let maxMove = null 
     for (let i = 0; i < possibleMoves.length; i++) {
         board.move(possibleMoves[i])
-        let val = getValue(board, depth + 1, alpha, beta)
+        let val = getValue(board, depth + 1, alpha, beta, transTable)
         if (val > beta) {
             board.undo()
             return val
@@ -232,13 +232,13 @@ function getMax(board, depth, alpha, beta) {
     return [maxVal, maxMove]
 }
 
-const chess = new Chess()
 const prompt = promptSync()
 app.post("/make_move", (req, res) => {
-    console.log(req.body)
     let from_coord = req.body["from"]
     let to_coord = req.body["to"]
     let promo_piece = req.body["piece"]
+    let fen = req.body["fen"]
+    let chess = new Chess(fen)
     if (promo_piece != "") {
         try {
             chess.move({from: from_coord, to: to_coord, piece: promo_piece})
@@ -275,8 +275,11 @@ app.post("/make_move", (req, res) => {
 app.get("/test", (req, res) => {
     res.send("test!")
 })
-app.get("/ai_move", (req, res) => {
-    let aiMove = getMin(chess, 0, -1000000, 1000000)
+app.post("/ai_move", (req, res) => {
+    let fen = req.body["fen"]
+    let chess = new Chess(fen)
+    let transTable = new Map()
+    let aiMove = getMin(chess, 0, -1000000, 1000000, transTable)
     chess.move(aiMove[1])
     console.log(chess.ascii())
 
