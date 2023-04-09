@@ -235,23 +235,42 @@ function getMax(board, depth, alpha, beta) {
 const chess = new Chess()
 const prompt = promptSync()
 app.post("/make_move", (req, res) => {
+    console.log(req.body)
     let from_coord = req.body["from"]
     let to_coord = req.body["to"]
-    try {
-        chess.move({from: from_coord, to: to_coord})
-        if (chess.isCheckmate()) {
-            res.send("white wins")
+    let promo_piece = req.body["piece"]
+    if (promo_piece != "") {
+        try {
+            chess.move({from: from_coord, to: to_coord, piece: promo_piece})
+            if (chess.isCheckmate()) {
+                res.send("white wins")
+            }
+            else if (chess.isStalemate() || chess.isDraw() || chess.isThreefoldRepetition()) {
+                res.send("draw")
+            }
+    
+            res.send(chess.fen())
+            console.log(chess.ascii())
+        } catch (error) {
+            res.send("error")
         }
-        else if (chess.isStalemate() || chess.isDraw() || chess.isThreefoldRepetition()) {
-            res.send("draw")
-        }
-
-        res.send(chess.fen())
-        console.log(chess.ascii())
-    } catch (error) {
-        res.send("error")
     }
-      
+    else {
+        try {
+            chess.move({from: from_coord, to: to_coord})
+            if (chess.isCheckmate()) {
+                res.send("white wins")
+            }
+            else if (chess.isStalemate() || chess.isDraw() || chess.isThreefoldRepetition()) {
+                res.send("draw")
+            }
+    
+            res.send(chess.fen())
+            console.log(chess.ascii())
+        } catch (error) {
+            res.send("error")
+        }
+    } 
 })
 app.get("/test", (req, res) => {
     res.send("test!")

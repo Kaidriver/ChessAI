@@ -183,32 +183,48 @@ async function getCell(curr) {
     }
     res = await make_move(currCell.id, curr.id, promotion);
     if (res !== "error" && res !== "draw" && res !== "white wins" && res !== "black wins") {
-      if (promotion) {
-        switch (promotion) {
-          case "q":
-          case "Q":
-            curr.innerHTML = letter_to_piece["Q"]
+      // if (promotion) {
+      //   switch (promotion) {
+      //     case "q":
+      //     case "Q":
+      //       curr.innerHTML = letter_to_piece["Q"]
+      //       break;
+      //     case "r":
+      //     case "R":
+      //       curr.innerHTML = letter_to_piece["R"]
+      //       break;
+      //     case "b":
+      //     case "B":
+      //       curr.innerHTML = letter_to_piece["B"]
+      //       break;
+      //     case "n":
+      //     case "N":
+      //       curr.innerHTML = letter_to_piece["N"]
+      //       break;
+      //   }
+      // } else {
+      //   curr.innerHTML = currPiece;
+      // }
+      // currCell.innerHTML = "";
+      FENtoBoard(res)
+      ai_res = await ai_move();
+
+      if (ai_res !== "draw" && ai_res !== "white wins" && ai_res !== "black wins") {
+        FENtoBoard(ai_res);
+      }
+      else {
+        switch (ai_res) {
+          case "draw":
+            alert("The game ended in a draw!");
             break;
-          case "r":
-          case "R":
-            curr.innerHTML = letter_to_piece["R"]
+          case "white wins":
+            alert("Player won!");
             break;
-          case "b":
-          case "B":
-            curr.innerHTML = letter_to_piece["B"]
-            break;
-          case "n":
-          case "N":
-            curr.innerHTML = letter_to_piece["N"]
+          case "black wins":
+            alert("AI won!");
             break;
         }
-      } else {
-        curr.innerHTML = currPiece;
       }
-      currCell.innerHTML = "";
-
-      ai_res = await ai_move();
-      FENtoBoard(ai_res);
     } else if (res !== "error") {
       switch (res) {
         case "draw":
