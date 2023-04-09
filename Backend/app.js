@@ -232,16 +232,43 @@ function getMax(board, depth, alpha, beta) {
     return [maxVal, maxMove]
 }
 
-const chess = new Chess('r1bqkbnr/1ppp1pp1/p1n4p/4p3/2BPP3/5N2/PPP2PPP/RNBQK2R w KQkq - 0 1')
+const chess = new Chess()
 const prompt = promptSync()
 
-
-chess.move({ from: 'e1', to: 'g1' })
 console.log(chess.ascii())
 
 app.post("/get_board", (req, res) => {
     console.log(req.body)
-    res.json(["Hello", "World"])
+    let from_coord = req.body["from"]
+    let to_coord = req.body["to"]
+    try {
+        chess.move({from: from_coord, to: to_coord})
+        console.log(chess.ascii())
+
+        if (chess.isCheckmate()) {
+            res.send("white wins")
+        }
+        else if (chess.isStalemate() || chess.isDraw() || chess.isThreefoldRepetition()) {
+            res.send("draw")
+        }
+
+        let aiMove = getMin(chess, 0, -1000000, 1000000)
+        chess.move(aiMove[1])
+        console.log(chess.ascii())
+
+        if (chess.isCheckmate()) {
+            res.send("black wins")
+        }
+        else if (chess.isStalemate() || chess.isDraw() || chess.isThreefoldRepetition()) {
+            res.send("draw")
+        }
+        else {
+            res.send(chess.fen())
+        }
+    } catch (error) {
+        res.send("error")
+    }
+      
 })
 
 // while (!chess.isCheckmate()) {
