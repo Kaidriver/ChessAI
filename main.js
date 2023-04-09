@@ -119,11 +119,16 @@ var coord = {
   "18": "h1"
 };
 
-async function get_move(from, to) {
-  let res = await axios.post("http://localhost:3000/get_board", {
+async function make_move(from, to) {
+  let res = await axios.post("http://localhost:3000/make_move", {
         from: from,
         to: to
       })
+  return res.data
+}
+
+async function ai_move() {
+  let res = await axios.get("http://localhost:3000/ai_move")
   return res.data
 }
 
@@ -147,12 +152,16 @@ async function getCell(curr) {
       currCell = curr;
     }
   } else {
-    res = await get_move(currCell.id, curr.id)
+    res = await make_move(currCell.id, curr.id)
     if (res !== "error" && res !== "draw" && res !== "white wins" && res !== "black wins") {
       curr.innerHTML = currPiece;
       currCell.innerHTML = "";
       FENtoBoard(res);
+
+      ai_res = await ai_move()
+      FENtoBoard(ai_res);
     }
+
     state = false;
     console.log("hi")
   }

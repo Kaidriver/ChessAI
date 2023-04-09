@@ -234,17 +234,11 @@ function getMax(board, depth, alpha, beta) {
 
 const chess = new Chess()
 const prompt = promptSync()
-
-console.log(chess.ascii())
-
-app.post("/get_board", (req, res) => {
-    console.log(req.body)
+app.post("/make_move", (req, res) => {
     let from_coord = req.body["from"]
     let to_coord = req.body["to"]
     try {
         chess.move({from: from_coord, to: to_coord})
-        console.log(chess.ascii())
-
         if (chess.isCheckmate()) {
             res.send("white wins")
         }
@@ -252,25 +246,29 @@ app.post("/get_board", (req, res) => {
             res.send("draw")
         }
 
-        let aiMove = getMin(chess, 0, -1000000, 1000000)
-        chess.move(aiMove[1])
+        res.send(chess.fen())
         console.log(chess.ascii())
-
-        if (chess.isCheckmate()) {
-            res.send("black wins")
-        }
-        else if (chess.isStalemate() || chess.isDraw() || chess.isThreefoldRepetition()) {
-            res.send("draw")
-        }
-        else {
-            res.send(chess.fen())
-        }
     } catch (error) {
         res.send("error")
     }
       
 })
 
+app.get("/ai_move", (req, res) => {
+    let aiMove = getMin(chess, 0, -1000000, 1000000)
+    chess.move(aiMove[1])
+    console.log(chess.ascii())
+
+    if (chess.isCheckmate()) {
+        res.send("black wins")
+    }
+    else if (chess.isStalemate() || chess.isDraw() || chess.isThreefoldRepetition()) {
+        res.send("draw")
+    }
+    else {
+        res.send(chess.fen())
+    }
+})
 // while (!chess.isCheckmate()) {
 //     let input = prompt("Move: ")
 //     chess.move(input)
