@@ -1,10 +1,11 @@
 import { Chess } from 'chess.js'
-import promptSync from 'prompt-sync';
+import promptSync from 'prompt-sync'
 import express from "express"
 import cors from "cors"
 
 var app = express();
 app.use(cors())
+app.use(express.json())
 app.listen(3000, () => {
  console.log("Server running on port 3000");
 });
@@ -238,10 +239,11 @@ const prompt = promptSync()
 chess.move({ from: 'e1', to: 'g1' })
 console.log(chess.ascii())
 
-app.get("/get_board", (req, res, next) => {
-    console.log(req)
+app.post("/get_board", (req, res) => {
+    console.log(req.body)
     res.json(["Hello", "World"])
 })
+
 // while (!chess.isCheckmate()) {
 //     let input = prompt("Move: ")
 //     chess.move(input)

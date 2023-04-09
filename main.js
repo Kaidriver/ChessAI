@@ -86,6 +86,15 @@ function initBoard() {
   document.getElementById("board").innerHTML = display;
 }
 
+async function get_move(from, to) {
+  let res = await axios.post("http://localhost:3000/get_board", {
+        from: from,
+        to: to
+      })
+  return res
+}
+
+
 // Listens for clicks, if cell has a piece, call getCell to update position
 function playBoard() {
   let cells = document.getElementsByTagName("td");
@@ -97,7 +106,7 @@ function playBoard() {
 }
 
 // Function to change piece position
-function getCell(curr) {
+async function getCell(curr) {
   if (!state) {
     getFEN();
     if (curr.innerHTML && piece_color[curr.innerHTML] === "white") {
@@ -113,6 +122,9 @@ function getCell(curr) {
     getFEN();
     state = false;
   }
+
+  let res = await get_move("e2", "e4")
+  console.log(res)
 }
 
 function FENtoBoard(fen) {
@@ -242,7 +254,3 @@ initGame();
  FENtoBoard("r1b1k1nr/p2p1pNp/n2B4/1p1NP2P/6P1/3P1Q2/P1P1K3/q5b1");
  playBoard();
 // FENtoBoard("8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8 b - - 99 50");
-
-axios.get('http://localhost:3000/get_board').then((res) => {
-  alert(res["data"])
-})
