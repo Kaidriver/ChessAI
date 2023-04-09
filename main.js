@@ -195,11 +195,11 @@ async function getCell(curr) {
     }
   } else {
     let res = await get_move(currCell.id, curr.id)
-    if (curr != currCell && piece_color[curr.innerHTML] !== "white") {
+    if (res !== "error" && res !== "draw" && res !== "white win" && res !== "black win") {
       curr.innerHTML = currPiece;
       currCell.innerHTML = "";
     }
-    getFEN();
+    FENtoBoard(res);
     state = false;
   }
 }
