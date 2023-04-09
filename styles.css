@@ -28,6 +28,10 @@
     width: 1.5em; height: 1.5em; text-align: center; font-size: 32px; line-height: 0;
 }
 
+.chess-board td:hover{
+  cursor: pointer;
+}
+
 .chess-board .light {
 background: #eee;
 }
@@ -62,5 +66,5 @@ background: #aaa;
 .loading {
   width: 3% !important;
   height: 3%;
-  display: none;
+  visibility: hidden;
 }

@@ -150,8 +150,12 @@ async function getCell(curr) {
       state = true;
       currPiece = curr.innerHTML;
       currCell = curr;
+      curr.style.background = "#6a6b6e";
     }
   } else {
+    console.log(currCell.classList[0] == "light")
+    currCell.style.background = (currCell.classList[0] == "light") ? "#eee" : "#aaa"
+    console.log(currCell.style.background)
     let promotion = "";
     if ((piece_to_letter[currPiece] === "p" || piece_to_letter[currPiece] === "P") && (curr.id).includes("8")) {
       let pass = true;
@@ -207,7 +211,7 @@ async function getCell(curr) {
       // }
       // currCell.innerHTML = "";
       FENtoBoard(res)
-      document.querySelector('.loading').style.display = "initial"
+      document.querySelector('.loading').style.visibility = "initial"
       ai_res = await ai_move();
 
       if (ai_res !== "draw" && ai_res !== "white wins" && ai_res !== "black wins") {
@@ -240,7 +244,7 @@ async function getCell(curr) {
       }
     }
 
-    document.querySelector('.loading').style.display = "none"
+    document.querySelector('.loading').style.visibility = "hidden"
     state = false;
   }
 }
