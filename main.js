@@ -195,6 +195,7 @@ async function getCell(curr) {
     }
   } else {
     let res = await get_move(currCell.id, curr.id)
+    console.log(res)
     if (curr != currCell && piece_color[curr.innerHTML] !== "white") {
       curr.innerHTML = currPiece;
       currCell.innerHTML = "";
@@ -330,6 +331,6 @@ function initGame() {
 initGame();
 
 // FENtoBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
- FENtoBoard("r1b1k1nr/p2p1pNp/n2B4/1p1NP2P/6P1/3P1Q2/P1P1K3/q5b1");
+ //FENtoBoard("r1b1k1nr/p2p1pNp/n2B4/1p1NP2P/6P1/3P1Q2/P1P1K3/q5b1");
  playBoard();
 // FENtoBoard("8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8 b - - 99 50");
