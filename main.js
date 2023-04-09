@@ -131,7 +131,7 @@ async function make_move(from, to, piece) {
 }
 
 async function ai_move() {
-  let res = await axios.post("http://api.cagnusmarlsenbot.tech/ai_move", {
+  let res = await axios.post("https://api.cagnusmarlsenbot.tech/ai_move", {
         fen: current_fen
       })
   return res.data
