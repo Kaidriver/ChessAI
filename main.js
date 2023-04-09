@@ -209,6 +209,18 @@ async function getCell(curr) {
 
       ai_res = await ai_move();
       FENtoBoard(ai_res);
+    } else if (res !== "error") {
+      switch (res) {
+        case "draw":
+          alert("The game ended in a draw!");
+          break;
+        case "white wins":
+          alert("Player won!");
+          break;
+        case "black wins":
+          alert("AI won!");
+          break;
+      }
     }
     state = false;
   }
